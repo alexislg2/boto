@@ -303,6 +303,7 @@ class MWSConnection(AWSQueryConnection):
         """
         headers = headers or {}
         path = self._sandboxify(request['path'])
+
         request = self.build_base_http_request('POST', path, None, data=body,
                                                params=params, headers=headers,
                                                host=self.host)
@@ -656,7 +657,9 @@ class MWSConnection(AWSQueryConnection):
                'ShippingSpeedCategory',    'DisplayableOrderDateTime',
                'DestinationAddress',       'DisplayableOrderComment',
                'Items'])
-    @structured_objects('DestinationAddress', 'Items')
+    @structured_objects('DestinationAddress')
+    @structured_objects('Items', members=True)
+    @structured_objects('NotificationEmailList', members=True)
     @api_action('Outbound', 30, 0.5)
     def create_fulfillment_order(self, request, response, **kw):
         """Requests that Amazon ship items from the seller's inventory
